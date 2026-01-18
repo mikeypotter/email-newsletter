@@ -1,0 +1,38 @@
+# Ottawa Newsletter Configuration - RSS Feed Version
+# NO MANUAL SELECTORS NEEDED!
+
+newsletter:
+  name: "Ottawa Daily Digest"
+  audience: "Ottawa residents, local business owners, and community members interested in local news and events"
+
+# Ottawa News Sources using RSS Feeds
+# RSS is automatic - no CSS selectors required!
+sources:
+  - name: "CBC Ottawa"
+    rss_url: "https://www.cbc.ca/cmlink/rss-canada-ottawa"
+
+  - name: "CTV News Ottawa"
+    rss_url: "https://ottawa.ctvnews.ca/rss/ctv-news-ottawa-1.822136"
+
+  - name: "Ottawa Citizen"
+    rss_url: "https://ottawacitizen.com/feed"
+
+  - name: "Ottawa Sun"
+    rss_url: "https://ottawasun.com/feed"
+
+  # You can also just provide a URL and let it auto-discover the RSS feed
+  - name: "Global News Ottawa"
+    url: "https://globalnews.ca/ottawa/"
+    # The scraper will automatically try to find the RSS feed
+
+# AI Model Configuration
+ai:
+  model: "claude-sonnet-4-5-20250929"
+  max_tokens: 4000
+  temperature: 0.7
+
+# Newsletter Settings
+newsletter_settings:
+  max_articles: 20
+  top_stories_count: 5
+  include_market_data: false
