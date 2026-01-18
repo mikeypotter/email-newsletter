@@ -59,8 +59,22 @@ class AutoScraper:
     def _scrape_rss(self, source: Dict, cutoff_time: datetime) -> List[Dict]:
         """Scrape articles from RSS feed"""
         try:
+            logger.debug(f"Fetching RSS feed: {source['rss_url']}")
             feed = feedparser.parse(source['rss_url'])
+
+            # Debug: Show feed status
+            if hasattr(feed, 'status'):
+                logger.debug(f"RSS HTTP Status: {feed.status}")
+
+            total_entries = len(feed.entries)
+            logger.debug(f"Total entries in feed: {total_entries}")
+
+            if total_entries == 0:
+                logger.warning(f"No entries found in RSS feed for {source['name']}")
+                return []
+
             articles = []
+            filtered_count = 0
 
             for entry in feed.entries:
                 # Parse publication date
@@ -72,7 +86,12 @@ class AutoScraper:
 
                 # Check if recent enough
                 if pub_date and pub_date < cutoff_time:
+                    filtered_count += 1
                     continue
+
+                # If no date, include it (assume it's recent)
+                if not pub_date:
+                    logger.debug(f"No date found for article: {entry.get('title', 'NO TITLE')[:50]}... - including it anyway")
 
                 # Extract article data
                 article = {
@@ -87,10 +106,19 @@ class AutoScraper:
                 if article['title']:
                     articles.append(article)
 
+            logger.debug(f"Filtered out {filtered_count} old articles (older than cutoff)")
+            logger.debug(f"Kept {len(articles)} recent articles")
+
+            if filtered_count > 0 and len(articles) == 0:
+                logger.warning(f"All {total_entries} articles from {source['name']} were older than {cutoff_time}")
+                logger.warning(f"Try increasing --hours parameter (currently filtering last 24 hours)")
+
             return articles
 
         except Exception as e:
             logger.error(f"RSS parsing failed for {source['name']}: {str(e)}")
+            import traceback
+            logger.debug(traceback.format_exc())
             return []
 
     def _auto_scrape(self, source: Dict, cutoff_time: datetime) -> List[Dict]:

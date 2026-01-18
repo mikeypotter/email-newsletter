@@ -195,8 +195,18 @@ def main():
         default='output',
         help='Output directory for newsletter (default: output)'
     )
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable debug output to see detailed scraping info'
+    )
 
     args = parser.parse_args()
+
+    # Set debug logging if requested
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.getLogger('auto_scraper').setLevel(logging.DEBUG)
 
     try:
         generator = NewsletterGenerator(config_path=args.config)
