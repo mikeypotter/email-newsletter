@@ -1,0 +1,41 @@
+# Newsletter Configuration
+newsletter:
+  name: "Your Newsletter Name"
+  audience: "tech professionals, startup founders, and business leaders"
+
+# Websites to scrape for news
+sources:
+  - name: "TechCrunch"
+    url: "https://techcrunch.com"
+    selectors:
+      article: "article.post-block"
+      title: "h2.post-block__title"
+      link: "a.post-block__title__link"
+      date: "time"
+
+  - name: "Hacker News"
+    url: "https://news.ycombinator.com"
+    selectors:
+      article: "tr.athing"
+      title: "span.titleline > a"
+      link: "span.titleline > a"
+
+  - name: "The Verge Tech"
+    url: "https://www.theverge.com/tech"
+    selectors:
+      article: "article"
+      title: "h2"
+      link: "a"
+      date: "time"
+
+# AI Model Configuration
+ai:
+  model: "claude-sonnet-4-5-20250929"
+  max_tokens: 4000
+  temperature: 0.7
+
+# Newsletter Settings
+newsletter_settings:
+  max_articles: 15
+  top_stories_count: 5
+  include_market_data: false  # Set to true if you want to include market data
