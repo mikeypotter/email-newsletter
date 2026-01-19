@@ -60,7 +60,17 @@ class AutoScraper:
         """Scrape articles from RSS feed"""
         try:
             logger.debug(f"Fetching RSS feed: {source['rss_url']}")
-            feed = feedparser.parse(source['rss_url'])
+
+            # Fetch RSS using requests first (better SSL handling and timeout support)
+            try:
+                response = requests.get(source['rss_url'], headers=self.headers, timeout=10)
+                response.raise_for_status()
+                feed = feedparser.parse(response.content)
+            except requests.RequestException as e:
+                logger.error(f"Failed to fetch RSS feed: {str(e)}")
+                # Fallback to feedparser's built-in fetching
+                logger.debug("Trying feedparser's built-in fetching...")
+                feed = feedparser.parse(source['rss_url'])
 
             # Debug: Show feed status
             if hasattr(feed, 'status'):
